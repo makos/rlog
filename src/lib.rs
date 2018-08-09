@@ -5,8 +5,9 @@ use std::io::Write;
 extern crate chrono;
 
 // Tokens
-// const TIME: &str = "$time";
-const DATETIME: &str = "$datetime";
+const TIME: &str = "$time";
+const TIMESHORT: &str = "$timeshort";
+const DATE: &str = "$date";
 const MESSAGE: &str = "$msg";
 
 pub struct Logger {
@@ -22,53 +23,38 @@ impl Logger {
         }
     }
 
-    pub fn log(&self, msg: &str) -> io::Result<bool> {
+    pub fn log(&self, msg: &str) -> bool {
         match OpenOptions::new()
             .append(true)
             .create(true)
             .open(&self.path)
         {
             Ok(mut file) => {
-                let final_msg = self.parse_format(msg) + "\n";
+                let final_msg = self.parse_format(msg);
                 match file.write(final_msg.as_bytes()) {
-                    Ok(_) => Ok(true),
-                    Err(e) => Err(e),
+                    Ok(_) => true,
+                    Err(e) => {
+                        eprintln!("{}", e);
+                        false
+                    }
                 }
             }
-            Err(e) => Err(e),
+            Err(e) => {
+                eprintln!("{}", e);
+                false
+            }
         }
     }
 
-    pub fn log_string(&self, msg: String) -> io::Result<bool> {
-        match OpenOptions::new()
-            .append(true)
-            .create(true)
-            .open(&self.path)
-        {
-            Ok(mut file) => {
-                let final_msg = self.parse_format_string(msg) + "\n";
-                match file.write(final_msg.as_bytes()) {
-                    Ok(_) => Ok(true),
-                    Err(e) => Err(e),
-                }
-            }
-            Err(e) => Err(e),
-        }
-    }
-
-    fn parse_format(&self, msg: &str) -> String {
+    pub fn parse_format(&self, msg: &str) -> String {
         let now = chrono::Local::now();
-        let datetime_str = now.format("%d-%m-%Y %a [%H:%M.%S] ");
+        let date_str = now.format("%d-%m-%Y %a").to_string();
+        let time_str = now.format("[%H:%M.%S]").to_string();
+        let timeshort_str = now.format("[%H:%M]").to_string();
         self.format
-            .replace(DATETIME, &datetime_str.to_string()[..])
-            .replace(MESSAGE, msg)
-    }
-
-    fn parse_format_string(&self, msg: String) -> String {
-        let now = chrono::Local::now();
-        let datetime_str = now.format("%d-%m-%Y %a [%H:%M.%S] ");
-        self.format
-            .replace(DATETIME, &datetime_str.to_string())
-            .replace(MESSAGE, &msg)
+            .replace(DATE, &date_str)
+            .replace(TIME, &time_str)
+            .replace(TIMESHORT, &timeshort_str)
+            .replace(MESSAGE, msg) + "\n"
     }
 }
