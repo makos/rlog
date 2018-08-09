@@ -1,8 +1,12 @@
+use std::fs::OpenOptions;
 use std::io;
+use std::io::Write;
+
+extern crate chrono;
 
 // Tokens
-const TIME: &str = "$time";
-const DATE: &str = "$date";
+// const TIME: &str = "$time";
+const DATETIME: &str = "$datetime";
 const MESSAGE: &str = "$msg";
 
 pub struct Logger {
@@ -18,7 +22,53 @@ impl Logger {
         }
     }
 
-    pub fn log_str(&self, msg: &str) -> Result<(), Error> {
-        Ok(())
+    pub fn log(&self, msg: &str) -> io::Result<bool> {
+        match OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(&self.path)
+        {
+            Ok(mut file) => {
+                let final_msg = self.parse_format(msg) + "\n";
+                match file.write(final_msg.as_bytes()) {
+                    Ok(_) => Ok(true),
+                    Err(e) => Err(e),
+                }
+            }
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn log_string(&self, msg: String) -> io::Result<bool> {
+        match OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(&self.path)
+        {
+            Ok(mut file) => {
+                let final_msg = self.parse_format_string(msg) + "\n";
+                match file.write(final_msg.as_bytes()) {
+                    Ok(_) => Ok(true),
+                    Err(e) => Err(e),
+                }
+            }
+            Err(e) => Err(e),
+        }
+    }
+
+    fn parse_format(&self, msg: &str) -> String {
+        let now = chrono::Local::now();
+        let datetime_str = now.format("%d-%m-%Y %a [%H:%M.%S] ");
+        self.format
+            .replace(DATETIME, &datetime_str.to_string()[..])
+            .replace(MESSAGE, msg)
+    }
+
+    fn parse_format_string(&self, msg: String) -> String {
+        let now = chrono::Local::now();
+        let datetime_str = now.format("%d-%m-%Y %a [%H:%M.%S] ");
+        self.format
+            .replace(DATETIME, &datetime_str.to_string())
+            .replace(MESSAGE, &msg)
     }
 }
