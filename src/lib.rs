@@ -16,6 +16,9 @@
 //! A minimal logging library.
 //!
 //! This is a tiny library used to write stuff happening in your program to a file.
+
+#![doc(html_root_url = "https://docs.rs/rlog/0.2.0")]
+
 use std::fs::OpenOptions;
 use std::io::Write;
 
@@ -23,28 +26,33 @@ extern crate chrono;
 
 // Tokens
 const TIME: &str = "$time";
-// const TIMESHORT: &str = "$timeshort";
 const DATE: &str = "$date";
 const MESSAGE: &str = "$msg";
 
 /// Main structure.
 ///
-/// ````ignore
+/// ````
 /// pub struct Logger {
 ///     pub path: String,
 ///     pub format: String,
+///     pub time_fmt: String,
+///     pub date_fmt: String,
 /// }
 /// ````
+///
 /// * `path`: filepath to the log file you want to use, can be relative.
-/// * `format`: output format to be used.
+/// * `format`: date, time and message output order to the log.
+/// * `time_fmt`: ISO8061-compliant time format string (i.e. `%H:%M`).
+/// * `date_fmt`: ISO8061-compliant date format string (i.e. `%d-%m-%Y`).
 ///
 /// Available format tokens:
-/// * `$time`: logs time in HH:MM.SS format.
-/// * `$timeshort`: logs time in HH:MM format.
-/// * `$date`: logs current date in DD-MM-YYYY Day format, where "Day" is a three letter abbreviation of week-day name.
+/// * `$time`: logs time in HH:MM.SS (by default) format.
+/// * `$date`: logs current date in DD-MM-YYYY Day (by default) format, where "Day" is a three letter abbreviation of week-day name.
 /// * `$msg`: where the actual message will be output.
 ///
-/// # Example
+/// # Examples
+///
+/// ## Default timestamp formatting
 ///
 /// ````
 /// extern crate rlog;
@@ -52,6 +60,7 @@ const MESSAGE: &str = "$msg";
 /// # use std::fs::remove_file;
 ///
 /// let log = Logger::new("my.log", "$date $time $msg");
+/// // Method log() returns a bool to signal succes or failure.
 /// assert!(log.log("Just testing"));
 /// assert!(log.log("Another test"));
 /// # remove_file("my.log").unwrap();
@@ -62,6 +71,30 @@ const MESSAGE: &str = "$msg";
 /// ````ignore
 /// 10.08.2018 09:06.33 Just testing
 /// 10.08.2018 09:06.34 Another test
+/// ````
+///
+/// ## Custom formatting
+///
+/// rlog supports (thanks to [chrono](https://crates.io/crates/chrono)) [ISO 8061](https://en.wikipedia.org/wiki/ISO_8601) timestamp formatting.
+///
+/// ````
+/// extern crate rlog;
+/// use rlog::Logger;
+/// # use std::fs::remove_file;
+///
+/// let mut log = Logger::new("my.log", "$date $time $msg"); // Note that this is a mutable instance.
+/// log.time_fmt = String::from("%H");
+/// log.date_fmt = String::from("%d-%m");
+///
+/// assert!(log.log("Custom format test"));
+/// # remove_file("my.log").unwrap();
+/// ````
+///
+/// Output:
+///
+/// `my.log`
+/// ````ignore
+/// 10-08 10 Custom format test
 /// ````
 ///
 pub struct Logger {
@@ -99,7 +132,12 @@ impl Logger {
 
     /// Log message `msg` to file.
     ///
-    /// Returns `true` on succesful write, `false` otherwise and prints error message to stderr.
+    /// This method will create the log file if it does not exist.
+    ///
+    /// # Errors
+    ///
+    /// If there are problems opening a file, the method returns `false` and prints error to stderr.
+    /// `Result<T, Err>` isn't used for the sake of simplicity.
     ///
     /// # Example
     ///
@@ -139,7 +177,6 @@ impl Logger {
         let now = chrono::Local::now();
         let date_str = now.format(&self.date_fmt).to_string();
         let time_str = now.format(&self.time_fmt).to_string();
-        // let timeshort_str = now.format("[%H:%M]").to_string();
         self.format
             .replace(DATE, &date_str)
             .replace(TIME, &time_str)

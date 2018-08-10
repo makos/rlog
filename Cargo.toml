@@ -1,11 +1,10 @@
 [package]
 name = "rlog"
-version = "0.1.4"
+version = "0.2.0" # remember to update html_root_url
 authors = ["Mateusz Makowski <matmakos@gmail.com>"]
 license = "GPL-3.0-only"
 description = "Minimal file-based logging library."
 repository = "https://github.com/makos/rlog"
-documentation = "https://docs.rs/rlog"
 readme = "README.md"
 keywords = ["log", "logging", "debug"]
 categories = ["development-tools::debugging", "development-tools"]
