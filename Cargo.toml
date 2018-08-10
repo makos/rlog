@@ -1,6 +1,6 @@
 [package]
 name = "rlog"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Mateusz Makowski <matmakos@gmail.com>"]
 license = "GPL-3.0-only"
 description = "Minimal file-based logging library."
