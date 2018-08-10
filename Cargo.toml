@@ -7,6 +7,11 @@ description = "Minimal file-based logging library."
 repository = "https://github.com/makos/rlog"
 documentation = "https://docs.rs/rlog"
 readme = "README.md"
+keywords = ["log", "logging", "debug"]
+categories = ["development-tools::debugging", "development-tools"]
 
 [dependencies]
 "chrono" = "0.4"
+
+[badges]
+travis-ci = { repository = "makos/rlog" }
