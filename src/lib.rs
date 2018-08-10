@@ -29,7 +29,7 @@ const MESSAGE: &str = "$msg";
 
 /// Main structure.
 ///
-/// ````
+/// ````ignore
 /// pub struct Logger {
 ///     pub path: String,
 ///     pub format: String,
@@ -46,20 +46,23 @@ const MESSAGE: &str = "$msg";
 ///
 /// # Example
 ///
-/// ```` ignore
+/// ````
 /// extern crate rlog;
 /// use rlog::Logger;
+/// # use std::fs::remove_file;
 ///
 /// let log = Logger::new("my.log", "$date $time $msg");
 /// assert!(log.log("Just testing"));
 /// assert!(log.log("Another test"));
+/// # remove_file("my.log").unwrap();
 /// ````
 ///
 /// Result is in file `my.log` in the root directory of your crate:
 ///
-/// `10.08.2018 09:06.33 Just testing`
-///
-/// `10.08.2018 09:06.34 Another test`
+/// ````ignore
+/// 10.08.2018 09:06.33 Just testing
+/// 10.08.2018 09:06.34 Another test
+/// ````
 ///
 pub struct Logger {
     pub path: String,
@@ -97,12 +100,14 @@ impl Logger {
     ///
     /// # Example
     ///
-    /// ```` ignore
+    /// ````
     /// extern crate rlog;
     /// use rlog::Logger;
+    /// # use std::fs::remove_file;
     ///
     /// let log = Logger::new("my.log", "$date $time $msg");
     /// assert!(log.log("Just testing"));
+    /// # remove_file("my.log").unwrap();
     /// ````
     pub fn log(&self, msg: &str) -> bool {
         match OpenOptions::new()
