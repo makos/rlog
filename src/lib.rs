@@ -23,7 +23,7 @@ extern crate chrono;
 
 // Tokens
 const TIME: &str = "$time";
-const TIMESHORT: &str = "$timeshort";
+// const TIMESHORT: &str = "$timeshort";
 const DATE: &str = "$date";
 const MESSAGE: &str = "$msg";
 
@@ -67,6 +67,8 @@ const MESSAGE: &str = "$msg";
 pub struct Logger {
     pub path: String,
     pub format: String,
+    pub time_fmt: String,
+    pub date_fmt: String,
 }
 
 impl Logger {
@@ -81,16 +83,17 @@ impl Logger {
     /// let log = Logger::new("test.log", "$msg"); // This format will just log messages without any timestamps.
     /// ````
     pub fn new(path: &str, format: &str) -> Logger {
-        if format == "" {
-            Logger {
-                path: path.to_string(),
-                format: String::from("$date $time $msg"),
-            }
-        } else {
-            Logger {
-                path: path.to_string(),
-                format: format.to_string(),
-            }
+        let mut _format = "$date $time $msg";
+
+        if format != "" {
+            _format = format;
+        }
+
+        Logger {
+            path: path.to_owned(),
+            format: _format.to_owned(),
+            time_fmt: String::from("%H:%M.%S"),
+            date_fmt: String::from("%d-%m-%Y %a"),
         }
     }
 
@@ -134,12 +137,11 @@ impl Logger {
 
     fn parse_format(&self, msg: &str) -> String {
         let now = chrono::Local::now();
-        let date_str = now.format("%d-%m-%Y %a").to_string();
-        let time_str = now.format("[%H:%M.%S]").to_string();
-        let timeshort_str = now.format("[%H:%M]").to_string();
+        let date_str = now.format(&self.date_fmt).to_string();
+        let time_str = now.format(&self.time_fmt).to_string();
+        // let timeshort_str = now.format("[%H:%M]").to_string();
         self.format
             .replace(DATE, &date_str)
-            .replace(TIMESHORT, &timeshort_str)
             .replace(TIME, &time_str)
             .replace(MESSAGE, msg) + "\n"
     }

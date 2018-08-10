@@ -21,17 +21,21 @@ use rlog::Logger;
 
 const TESTLOG: &str = "test.log";
 const FORMAT: &str = "$date $time $msg";
+const TIME_FMT: &str = "%H:%M";
+const DATE_FMT: &str = "%d-%m-%Y %a";
 
 #[test]
 fn instantiate() {
     let log = Logger::new(TESTLOG, FORMAT);
     assert_eq!(log.format, FORMAT);
     assert_eq!(log.path, TESTLOG);
+    assert_eq!(log.time_fmt, "%H:%M.%S");
+    assert_eq!(log.date_fmt, "%d-%m-%Y %a");
 }
 
 #[test]
 fn logging_str() {
-    let log = Logger::new("logging_str.log", FORMAT);
+    let log = testenv::instantiate("logging_str.log", FORMAT, TIME_FMT, DATE_FMT);
 
     assert!(log.log("logging_str()"));
 
@@ -43,7 +47,7 @@ fn logging_str() {
 
 #[test]
 fn logging_string() {
-    let log = Logger::new("logging_string.log", FORMAT);
+    let log = testenv::instantiate("logging_string.log", FORMAT, TIME_FMT, DATE_FMT);
 
     assert!(log.log(&String::from("logging_string()")));
 
@@ -55,7 +59,7 @@ fn logging_string() {
 
 #[test]
 fn logging_reverse_format() {
-    let log = Logger::new("logging_reverse_format.log", "$time $date $msg");
+    let log = testenv::instantiate("logging_reverse_format.log", FORMAT, TIME_FMT, DATE_FMT);
 
     assert!(log.log("logging_reverse_format()"));
 
@@ -65,32 +69,32 @@ fn logging_reverse_format() {
     ));
 }
 
-#[test]
-fn logging_timeshort_format() {
-    let log = Logger::new("logging_timeshort_format.log", "$date $timeshort $msg");
+// #[test]
+// fn logging_timeshort_format() {
+//     let log = Logger::new("logging_timeshort_format.log", "$date $timeshort $msg");
 
-    assert!(log.log("logging_timeshort_format()"));
+//     assert!(log.log("logging_timeshort_format()"));
 
-    assert!(testenv::check_and_delete(
-        "logging_timeshort_format()",
-        "logging_timeshort_format.log"
-    ));
-}
+//     assert!(testenv::check_and_delete(
+//         "logging_timeshort_format()",
+//         "logging_timeshort_format.log"
+//     ));
+// }
 
-#[test]
-fn logging_time_and_timeshort() {
-    let log = Logger::new(
-        "logging_time_and_timeshort.log",
-        "$date $time $timeshort $msg",
-    );
+// #[test]
+// fn logging_time_and_timeshort() {
+//     let log = Logger::new(
+//         "logging_time_and_timeshort.log",
+//         "$date $time $timeshort $msg",
+//     );
 
-    assert!(log.log("logging_time_and_timeshort()"));
+//     assert!(log.log("logging_time_and_timeshort()"));
 
-    assert!(testenv::check_and_delete(
-        "logging_time_and_timeshort()",
-        "logging_time_and_timeshort.log"
-    ));
-}
+//     assert!(testenv::check_and_delete(
+//         "logging_time_and_timeshort()",
+//         "logging_time_and_timeshort.log"
+//     ));
+// }
 
 #[test]
 fn bad_file_name() {
@@ -101,7 +105,7 @@ fn bad_file_name() {
 
 #[test]
 fn bad_format() {
-    let log = Logger::new("bad_format.log", "");
+    let log = testenv::instantiate("bad_format.log", "", TIME_FMT, DATE_FMT);
 
     assert!(log.log("bad_file_name()"));
 
