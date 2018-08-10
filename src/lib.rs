@@ -28,7 +28,7 @@ const MESSAGE: &str = "$msg";
 /// * `$time`: logs time in HH:MM.SS format.
 /// * `$timeshort`: logs time in HH:MM format.
 /// * `$date`: logs current date in DD-MM-YYYY Day format, where "Day" is a three letter abbreviation of week-day name.
-/// * '$msg': where the actual message will be output.
+/// * `$msg`: where the actual message will be output.
 ///
 /// # Example
 ///
