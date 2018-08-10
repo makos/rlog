@@ -1,6 +1,6 @@
 # rlog
 
-[![Build Status](https://travis-ci.org/makos/rlog.svg?branch=master)](https://travis-ci.org/makos/rlog) [![Docs Badge](https://docs.rs/rlog/badge.svg)](https://docs.rs/rlog/) [![crates.io Badge](https://img.shields.io/badge/crates.io-0.1.0-orange.svg)](https://crates.io/crates/rlog)
+[![Build Status](https://travis-ci.org/makos/rlog.svg?branch=master)](https://travis-ci.org/makos/rlog) [![Docs Badge](https://docs.rs/rlog/badge.svg)](https://docs.rs/rlog/) [![crates.io Badge](https://img.shields.io/badge/crates.io-0.1-orange.svg)](https://crates.io/crates/rlog)
 
 Minimal file-based logging library.
 
