@@ -12,15 +12,12 @@ pub fn instantiate(path: &str, format: &str, time_fmt: &str, date_fmt: &str) -> 
     log
 }
 
-pub fn check_and_delete(msg: &str, path: &str) -> bool {
+pub fn check_and_delete(msg: &str, path: &str, fmt: &str) -> bool {
     let mut contents = String::new();
     // Get a current timestamp and append the message to it
     // to emulate logging output.
     let mut msg = msg.to_owned();
-
-    msg = chrono::Local::now()
-        .format("%d-%m-%Y %a %H:%M ")
-        .to_string() + &msg;
+    msg = chrono::Local::now().format(fmt).to_string() + &msg;
 
     if let Ok(mut file) = File::open(path) {
         file.read_to_string(&mut contents)
