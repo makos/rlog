@@ -16,6 +16,8 @@
 //! A minimal logging library.
 //!
 //! This is a tiny library used to write stuff happening in your program to a file.
+//!
+//! Changelog for current version can be found in the [repository](https://github.com/makos/rlog).
 
 #![doc(html_root_url = "https://docs.rs/rlog/0.2.0")]
 
