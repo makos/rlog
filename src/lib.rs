@@ -17,7 +17,6 @@
 //!
 //! This is a tiny library used to write stuff happening in your program to a file.
 use std::fs::OpenOptions;
-// use std::io;
 use std::io::Write;
 
 extern crate chrono;
