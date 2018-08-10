@@ -12,14 +12,9 @@ pub fn check_and_delete(msg: &str, path: &str) -> bool {
     }
 
     match contents.find(msg) {
-        Some(i) => {
-            if i == 26 {
-                remove_file(path).expect("check_and_delete(): error removing file");
-                return true;
-            } else {
-                remove_file(path).expect("check_and_delete(): error removing file");
-                return false;
-            }
+        Some(_) => {
+            remove_file(path).expect("check_and_delete(): error removing file");
+            return true;
         }
         None => {
             remove_file(path).expect("check_and_delete(): error removing file");

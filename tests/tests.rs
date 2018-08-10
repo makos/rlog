@@ -64,3 +64,49 @@ fn logging_reverse_format() {
         "logging_reverse_format.log"
     ));
 }
+
+#[test]
+fn logging_timeshort_format() {
+    let log = Logger::new("logging_timeshort_format.log", "$date $timeshort $msg");
+
+    assert!(log.log("logging_timeshort_format()"));
+
+    assert!(testenv::check_and_delete(
+        "logging_timeshort_format()",
+        "logging_timeshort_format.log"
+    ));
+}
+
+#[test]
+fn logging_time_and_timeshort() {
+    let log = Logger::new(
+        "logging_time_and_timeshort.log",
+        "$date $time $timeshort $msg",
+    );
+
+    assert!(log.log("logging_time_and_timeshort()"));
+
+    assert!(testenv::check_and_delete(
+        "logging_time_and_timeshort()",
+        "logging_time_and_timeshort.log"
+    ));
+}
+
+#[test]
+fn bad_file_name() {
+    let log = Logger::new("", "$time $date $msg");
+
+    assert!(!log.log("bad_file_name()"));
+}
+
+#[test]
+fn bad_format() {
+    let log = Logger::new("bad_format.log", "");
+
+    assert!(log.log("bad_file_name()"));
+
+    assert!(testenv::check_and_delete(
+        "bad_file_name()",
+        "bad_format.log"
+    ));
+}

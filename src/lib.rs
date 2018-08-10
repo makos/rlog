@@ -78,9 +78,16 @@ impl Logger {
     /// let log = Logger::new("test.log", "$msg"); // This format will just log messages without any timestamps.
     /// ````
     pub fn new(path: &str, format: &str) -> Logger {
-        Logger {
-            path: path.to_string(),
-            format: format.to_string(),
+        if format == "" {
+            Logger {
+                path: path.to_string(),
+                format: String::from("$date $time $msg"),
+            }
+        } else {
+            Logger {
+                path: path.to_string(),
+                format: format.to_string(),
+            }
         }
     }
 
@@ -108,13 +115,13 @@ impl Logger {
                 match file.write(final_msg.as_bytes()) {
                     Ok(_) => true,
                     Err(e) => {
-                        eprintln!("{}", e);
+                        eprintln!("Logger::log() write error:\n{}\n", e);
                         false
                     }
                 }
             }
             Err(e) => {
-                eprintln!("{}", e);
+                eprintln!("Logger::log() open error:\n{}\n", e);
                 false
             }
         }
@@ -127,8 +134,8 @@ impl Logger {
         let timeshort_str = now.format("[%H:%M]").to_string();
         self.format
             .replace(DATE, &date_str)
-            .replace(TIME, &time_str)
             .replace(TIMESHORT, &timeshort_str)
+            .replace(TIME, &time_str)
             .replace(MESSAGE, msg) + "\n"
     }
 }
