@@ -6,6 +6,7 @@ license = "GPL-3.0-only"
 description = "Minimal file-based logging library."
 repository = "https://github.com/makos/rlog"
 documentation = "https://docs.rs/rlog"
+readme = "README.md"
 
 [dependencies]
 "chrono" = "0.4"
