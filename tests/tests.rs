@@ -15,11 +15,12 @@
 
 extern crate rlog;
 
+mod testenv;
+
 use rlog::Logger;
-use std::fs::remove_file;
 
 const TESTLOG: &str = "test.log";
-const FORMAT: &str = "$date $timeshort $msg";
+const FORMAT: &str = "$date $time $msg";
 
 #[test]
 fn instantiate() {
@@ -33,7 +34,11 @@ fn logging_str() {
     let log = Logger::new("logging_str.log", FORMAT);
 
     assert!(log.log("logging_str()"));
-    remove_file("logging_str.log").expect("delete_leftover(): error removing file");
+
+    assert!(testenv::check_and_delete(
+        "logging_str()",
+        "logging_str.log"
+    ));
 }
 
 #[test]
@@ -41,13 +46,21 @@ fn logging_string() {
     let log = Logger::new("logging_string.log", FORMAT);
 
     assert!(log.log(&String::from("logging_string()")));
-    remove_file("logging_string.log").expect("delete_leftover(): error removing file");
+
+    assert!(testenv::check_and_delete(
+        "logging_string()",
+        "logging_string.log"
+    ));
 }
 
 #[test]
 fn logging_reverse_format() {
-    let log = Logger::new("logging_reverse_format.log", "$timeshort $date $msg");
+    let log = Logger::new("logging_reverse_format.log", "$time $date $msg");
 
     assert!(log.log("logging_reverse_format()"));
-    remove_file("logging_reverse_format.log").expect("delete_leftover(): error removing file");
+
+    assert!(testenv::check_and_delete(
+        "logging_reverse_format()",
+        "logging_reverse_format.log"
+    ));
 }
