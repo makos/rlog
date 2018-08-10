@@ -1,9 +1,11 @@
 [package]
 name = "rlog"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Mateusz Makowski <matmakos@gmail.com>"]
 license = "GPL-3.0-only"
-description = "Minimal file-based logging library"
+description = "Minimal file-based logging library."
+repository = "https://github.com/makos/rlog"
+documentation = "https://docs.rs/rlog"
 
 [dependencies]
 "chrono" = "0.4"
