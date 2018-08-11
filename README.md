@@ -35,6 +35,9 @@ When instantiating a new logger instance, you can set the logfile `path` and des
 Available format tokens are: `$date $time $timeshort $msg`. Those are pretty self-explanatory. 
 `$time` is normal HH:MM.SS format, `$timeshort` is only HH:MM.
 
+There are also two public fields available: `time_fmt` and `date_fmt`, that allow you to specify custom
+ISO 8061 compatible timestamp format strings.
+
 # License
 
 Licensed under GPL 3.0. See LICENSE for details.
