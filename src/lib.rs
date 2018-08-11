@@ -19,7 +19,7 @@
 //!
 //! Changelog for current version can be found in the [repository](https://github.com/makos/rlog).
 
-#![doc(html_root_url = "https://docs.rs/rlog/0.2.0")]
+#![doc(html_root_url = "https://docs.rs/rlog/1.0.0")]
 
 use std::fs::OpenOptions;
 use std::io::Write;
@@ -37,6 +37,9 @@ extern crate chrono;
 ///
 /// * `path`: filepath to the log file you want to use, can be relative.
 /// * `format`: timestamp in [ISO8061](https://en.wikipedia.org/wiki/ISO_8601) format.
+///
+/// Please note that the log file isn't created after creating a new instance of Logger struct,
+/// but rather after the first call to `log()` method. That is also the time when filepath given is validated.    
 ///
 /// # Examples
 ///
@@ -177,6 +180,6 @@ impl Logger {
 
     fn parse_format(&self, msg: &str) -> String {
         let now = chrono::Local::now();
-        now.format(&self.format).to_string() + " " + msg
+        now.format(&self.format).to_string() + " " + msg + "\n"
     }
 }
