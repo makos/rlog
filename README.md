@@ -1,6 +1,6 @@
 # rlog
 
-[![Build Status](https://travis-ci.org/makos/rlog.svg?branch=master)](https://travis-ci.org/makos/rlog) [![Docs Badge](https://docs.rs/rlog/badge.svg)](https://docs.rs/rlog/) [![crates.io Badge](https://img.shields.io/badge/crates.io-0.2-orange.svg)](https://crates.io/crates/rlog)
+[![Build Status](https://travis-ci.org/makos/rlog.svg?branch=master)](https://travis-ci.org/makos/rlog) [![Docs Badge](https://docs.rs/rlog/badge.svg)](https://docs.rs/rlog/) [![crates.io Badge](https://img.shields.io/badge/crates.io-0.3-orange.svg)](https://crates.io/crates/rlog)
 
 Minimal file-based logging library.
 
@@ -11,7 +11,7 @@ Minimal file-based logging library.
 `Cargo.toml`
 ````
 [dependencies]
-"rlog" = "0.2"
+"rlog" = "0.3"
 ````
 
 `src/main.rs`
@@ -19,7 +19,7 @@ Minimal file-based logging library.
 extern crate rlog;
 use rlog::Logger;
 
-let log = Logger::new("./test.log", "$date $time $msg");
+let log = Logger::new("./test.log", "");
 log.log("Dear diary, today I wrote some Rust code!");
 ````
 
@@ -32,11 +32,7 @@ Output:
 ## Available options
 
 When instantiating a new logger instance, you can set the logfile `path` and desired log `format`.
-Available format tokens are: `$date $time $timeshort $msg`. Those are pretty self-explanatory. 
-`$time` is normal HH:MM.SS format, `$timeshort` is only HH:MM.
-
-There are also two public fields available: `time_fmt` and `date_fmt`, that allow you to specify custom
-ISO 8061 compatible timestamp format strings.
+`path` is a relative or absolute path to your log file, and `format` is an ISO8061-style timestamp (e.g. `%d-%m-%y %H:%M`).
 
 # License
 
