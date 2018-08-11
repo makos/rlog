@@ -175,6 +175,14 @@ impl Logger {
         }
     }
 
+    pub fn set_time_fmt(&mut self, fmt: &str) {
+        self.time_fmt = fmt.to_owned();
+    }
+
+    pub fn set_date_fmt(&mut self, fmt: &str) {
+        self.date_fmt = fmt.to_owned();
+    }
+
     fn parse_format(&self, msg: &str) -> String {
         let now = chrono::Local::now();
         let date_str = now.format(&self.date_fmt).to_string();
