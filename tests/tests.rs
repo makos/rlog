@@ -20,87 +20,97 @@ mod testenv;
 use rlog::Logger;
 
 const TESTLOG: &str = "test.log";
-const FORMAT: &str = "$date $time $msg";
-const TIME_FMT: &str = "%H:%M";
-const DATE_FMT: &str = "%d-%m-%Y %a";
+const FORMAT: &str = "%d-%m-%Y %a %H:%M";
 
 #[test]
 fn instantiate() {
     let log = Logger::new(TESTLOG, FORMAT);
-    assert_eq!(log.format, FORMAT);
-    assert_eq!(log.path, TESTLOG);
-    assert_eq!(log.time_fmt, "%H:%M.%S");
-    assert_eq!(log.date_fmt, "%d-%m-%Y %a");
+    assert_eq!(log.get_fmt(), FORMAT);
+    assert_eq!(log.get_path(), TESTLOG);
 }
 
 #[test]
 fn logging_str() {
-    let log = testenv::instantiate("logging_str.log", FORMAT, TIME_FMT, DATE_FMT);
+    let log = Logger::new("logging_str.log", FORMAT);
 
     assert!(log.log("logging_str()"));
 
     assert!(testenv::check_and_delete(
         "logging_str()",
         "logging_str.log",
-        "%d-%m-%Y %a %H:%M "
+        FORMAT
     ));
 }
 
 #[test]
 fn logging_string() {
-    let log = testenv::instantiate("logging_string.log", FORMAT, TIME_FMT, DATE_FMT);
+    let log = Logger::new("logging_string.log", FORMAT);
 
     assert!(log.log(&String::from("logging_string()")));
 
     assert!(testenv::check_and_delete(
         "logging_string()",
         "logging_string.log",
-        "%d-%m-%Y %a %H:%M "
+        FORMAT
     ));
 }
 
 #[test]
 fn logging_reverse_format() {
-    let log = testenv::instantiate("logging_reverse_format.log", FORMAT, TIME_FMT, DATE_FMT);
+    let log = Logger::new("logging_reverse_format.log", FORMAT);
 
     assert!(log.log("logging_reverse_format()"));
 
     assert!(testenv::check_and_delete(
         "logging_reverse_format()",
         "logging_reverse_format.log",
-        "%d-%m-%Y %a %H:%M "
+        FORMAT
     ));
 }
 
 #[test]
 fn bad_file_name() {
-    let log = Logger::new("", "$time $date $msg");
+    let log = Logger::new("", FORMAT);
 
     assert!(!log.log("bad_file_name()"));
 }
 
 #[test]
-fn bad_format() {
-    let log = testenv::instantiate("bad_format.log", "", TIME_FMT, DATE_FMT);
+fn empty_format() {
+    let log = Logger::new("empty_format.log", "");
 
-    assert!(log.log("bad_file_name()"));
+    assert!(log.log("empty_format()"));
 
     assert!(testenv::check_and_delete(
-        "bad_file_name()",
-        "bad_format.log",
-        "%d-%m-%Y %a %H:%M "
+        "empty_format()",
+        "empty_format.log",
+        "%d-%m-%Y %a %H:%M.%S"
     ));
 }
 
 #[test]
 fn custom_format() {
-    let log = testenv::instantiate("custom_format.log", FORMAT, "%H", "%Y");
+    let log = Logger::new("custom_format.log", "%Y %H");
 
     assert!(log.log("custom_format()"));
 
     assert!(testenv::check_and_delete(
         "custom_format()",
         "custom_format.log",
-        "%Y %H "
+        "%Y %H"
     ));
+}
+
+#[test]
+fn test_get_fmt() {
+    let log = Logger::new("get_fmt.log", FORMAT);
+
+    assert_eq!(FORMAT, log.get_fmt());
+}
+
+#[test]
+fn test_get_path() {
+    let log = Logger::new("get_path.log", FORMAT);
+
+    assert_eq!("get_path.log", log.get_path());
 }
