@@ -57,14 +57,14 @@ fn logging_string() {
 
 #[test]
 fn logging_reverse_format() {
-    let log = Logger::new("logging_reverse_format.log", FORMAT);
+    let log = Logger::new("logging_reverse_format.log", "%H:%M %d-%m-%Y %a");
 
     assert!(log.log("logging_reverse_format()"));
 
     assert!(testenv::check_and_delete(
         "logging_reverse_format()",
         "logging_reverse_format.log",
-        FORMAT
+        "%H:%M %d-%m-%Y %a"
     ));
 }
 
