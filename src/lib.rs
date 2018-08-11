@@ -26,11 +26,6 @@ use std::io::Write;
 
 extern crate chrono;
 
-// Tokens
-const TIME: &str = "$time";
-const DATE: &str = "$date";
-const MESSAGE: &str = "$msg";
-
 /// Main structure.
 ///
 /// ````
@@ -84,9 +79,7 @@ const MESSAGE: &str = "$msg";
 /// use rlog::Logger;
 /// # use std::fs::remove_file;
 ///
-/// let mut log = Logger::new("my.log", "$date $time $msg"); // Note that this is a mutable instance.
-/// log.time_fmt = String::from("%H");
-/// log.date_fmt = String::from("%d-%m");
+/// let log = Logger::new("my.log", "%d-%m %H");
 ///
 /// assert!(log.log("Custom format test"));
 /// # remove_file("my.log").unwrap();
@@ -100,10 +93,8 @@ const MESSAGE: &str = "$msg";
 /// ````
 ///
 pub struct Logger {
-    pub path: String,
-    pub format: String,
-    pub time_fmt: String,
-    pub date_fmt: String,
+    path: String,
+    format: String,
 }
 
 impl Logger {
@@ -118,7 +109,7 @@ impl Logger {
     /// let log = Logger::new("test.log", "$msg"); // This format will just log messages without any timestamps.
     /// ````
     pub fn new(path: &str, format: &str) -> Logger {
-        let mut _format = "$date $time $msg";
+        let mut _format = "%d-%m-%Y %a %H:%M.%S";
 
         if format != "" {
             _format = format;
@@ -127,9 +118,23 @@ impl Logger {
         Logger {
             path: path.to_owned(),
             format: _format.to_owned(),
-            time_fmt: String::from("%H:%M.%S"),
-            date_fmt: String::from("%d-%m-%Y %a"),
         }
+    }
+
+    pub fn fmt(&mut self, fmt: &str) {
+        self.format = fmt.to_owned();
+    }
+
+    pub fn get_fmt(&self) -> &str {
+        &self.format
+    }
+
+    pub fn path(&mut self, path: &str) {
+        self.path = path.to_owned();
+    }
+
+    pub fn get_path(&self) -> &str {
+        &self.path
     }
 
     /// Log message `msg` to file.
@@ -148,7 +153,7 @@ impl Logger {
     /// use rlog::Logger;
     /// # use std::fs::remove_file;
     ///
-    /// let log = Logger::new("my.log", "$date $time $msg");
+    /// let log = Logger::new("my.log", "");
     /// assert!(log.log("Just testing"));
     /// # remove_file("my.log").unwrap();
     /// ````
@@ -175,21 +180,8 @@ impl Logger {
         }
     }
 
-    pub fn set_time_fmt(&mut self, fmt: &str) {
-        self.time_fmt = fmt.to_owned();
-    }
-
-    pub fn set_date_fmt(&mut self, fmt: &str) {
-        self.date_fmt = fmt.to_owned();
-    }
-
     fn parse_format(&self, msg: &str) -> String {
         let now = chrono::Local::now();
-        let date_str = now.format(&self.date_fmt).to_string();
-        let time_str = now.format(&self.time_fmt).to_string();
-        self.format
-            .replace(DATE, &date_str)
-            .replace(TIME, &time_str)
-            .replace(MESSAGE, msg) + "\n"
+        now.format(&self.format).to_string() + " " + msg
     }
 }
