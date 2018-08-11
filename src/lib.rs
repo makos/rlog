@@ -30,22 +30,13 @@ extern crate chrono;
 ///
 /// ````
 /// pub struct Logger {
-///     pub path: String,
-///     pub format: String,
-///     pub time_fmt: String,
-///     pub date_fmt: String,
+///     path: String,
+///     format: String,
 /// }
 /// ````
 ///
 /// * `path`: filepath to the log file you want to use, can be relative.
-/// * `format`: date, time and message output order to the log.
-/// * `time_fmt`: ISO8061-compliant time format string (i.e. `%H:%M`).
-/// * `date_fmt`: ISO8061-compliant date format string (i.e. `%d-%m-%Y`).
-///
-/// Available format tokens:
-/// * `$time`: logs time in HH:MM.SS (by default) format.
-/// * `$date`: logs current date in DD-MM-YYYY Day (by default) format, where "Day" is a three letter abbreviation of week-day name.
-/// * `$msg`: where the actual message will be output.
+/// * `format`: timestamp in [ISO8061](https://en.wikipedia.org/wiki/ISO_8601) format.
 ///
 /// # Examples
 ///
@@ -56,7 +47,7 @@ extern crate chrono;
 /// use rlog::Logger;
 /// # use std::fs::remove_file;
 ///
-/// let log = Logger::new("my.log", "$date $time $msg");
+/// let log = Logger::new("my.log", ""); // Note the empty string literal as second parameter.
 /// // Method log() returns a bool to signal succes or failure.
 /// assert!(log.log("Just testing"));
 /// assert!(log.log("Another test"));
@@ -79,7 +70,7 @@ extern crate chrono;
 /// use rlog::Logger;
 /// # use std::fs::remove_file;
 ///
-/// let log = Logger::new("my.log", "%d-%m %H");
+/// let log = Logger::new("my.log", "%d-%m %H:%M");
 ///
 /// assert!(log.log("Custom format test"));
 /// # remove_file("my.log").unwrap();
@@ -89,9 +80,9 @@ extern crate chrono;
 ///
 /// `my.log`
 /// ````ignore
-/// 10-08 10 Custom format test
+/// 10-08 10:46 Custom format test
 /// ````
-///
+
 pub struct Logger {
     path: String,
     format: String,
@@ -106,7 +97,7 @@ impl Logger {
     /// extern crate rlog;
     /// use rlog::Logger;
     ///
-    /// let log = Logger::new("test.log", "$msg"); // This format will just log messages without any timestamps.
+    /// let log = Logger::new("test.log", "%a %H:%M");
     /// ````
     pub fn new(path: &str, format: &str) -> Logger {
         let mut _format = "%d-%m-%Y %a %H:%M.%S";
@@ -121,18 +112,22 @@ impl Logger {
         }
     }
 
+    /// Format setter method.
     pub fn fmt(&mut self, fmt: &str) {
         self.format = fmt.to_owned();
     }
 
+    /// Format getter method.
     pub fn get_fmt(&self) -> &str {
         &self.format
     }
 
+    /// Path setter method.
     pub fn path(&mut self, path: &str) {
         self.path = path.to_owned();
     }
 
+    /// Path getter method.
     pub fn get_path(&self) -> &str {
         &self.path
     }
